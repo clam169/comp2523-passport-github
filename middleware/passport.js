@@ -1,5 +1,6 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const userModel = require("../models/userModel");
 const userController = require("../controllers/userController");
 const GithubStrategy = require ("passport-github2").Strategy;
 const githubLogin = new GithubStrategy(
@@ -7,13 +8,23 @@ const githubLogin = new GithubStrategy(
     clientID: process.env.clientID,
     clientSecret: process.env.clientSecret,
     callbackURL: "http://127.0.0.1:8000/auth/github/callback",
-    scope: ["user:"]
   },
-  function(accessToken, refreshToken, profile, cb) {
-    User.findOrCreate({ githubId: profile.id }, function (err, user) {
-      return cb(err, user);
-    });
-  }
+  // function(accessToken, refreshToken, profile, cb) {
+  //   User.findOrCreate({ githubId: profile.id }, function (err, user) {
+  //     return cb(err, user);
+  //   });
+  // }
+  function(accessToken, refreshToken, profile, done) {
+    // let profileName = profile.username;
+    // let profileId = profile.id;
+    // console.log(profileId + profileName);
+    const user = userController.getUserByGithub(profile) 
+      return user
+      ? done(null, user)
+      : done(null, false, {
+          message: 'Your login details are not valid. Please try again',
+        });
+    }
 )
 
 const localLogin = new LocalStrategy(
@@ -48,3 +59,4 @@ module.exports = {
   localLogin: passport.use(localLogin), 
   githubLogin: passport.use(githubLogin)
 };
+module.exports = passport.use(localLogin).use(githubLogin);

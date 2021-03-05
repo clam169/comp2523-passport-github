@@ -30,10 +30,8 @@ const indexRoute = require("./routes/indexRoute");
 app.use(express.json());
 app.use(expressLayouts);
 app.use(express.urlencoded({ extended: true }));
-app.use(passport.localLogin.initialize());
-app.use(passport.localLogin.session());
-app.use(passport.githubLogin.initialize());
-app.use(passport.githubLogin.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use((req, res, next) => {
   console.log(`User details are: `);
