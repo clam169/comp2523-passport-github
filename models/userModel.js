@@ -15,7 +15,8 @@ const database = [
     id: 3,
     name: "Jonathan Chen",
     email: "jonathan123@gmail.com",
-    password: "jonathan123!",
+    password: "!",
+    isAdmin: true,
   },
 ];
 
@@ -36,18 +37,26 @@ const userModel = {
   },
   findOrCreate: (profile) => {
     let profileId = parseInt(profile.id)
-    console.log(profileId)
+    let profileName;
+    if (profile.displayName) {
+      profileName = profile.displayName;
+    } else {
+      profileName = profile.username;
+    }
     const user = database.find((user) => user.id === profileId);
     if (user) {
       return user;
     } else {
       database.push({
         id: profileId,
-        name: profile.username,
+        name: profileName,
       })
       userModel.findById(profileId);
     }
-  }
+  },
+  // isAdmin: (user) => {
+  //  return user.isAdmin;
+  // }
 };
 
 module.exports = { database, userModel };

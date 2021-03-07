@@ -9,16 +9,10 @@ const githubLogin = new GithubStrategy(
     clientSecret: process.env.clientSecret,
     callbackURL: "http://127.0.0.1:8000/auth/github/callback",
   },
-  // function(accessToken, refreshToken, profile, cb) {
-  //   User.findOrCreate({ githubId: profile.id }, function (err, user) {
-  //     return cb(err, user);
-  //   });
-  // }
+
   function(accessToken, refreshToken, profile, done) {
-    // let profileName = profile.username;
-    // let profileId = profile.id;
-    // console.log(profileId + profileName);
     const user = userController.getUserByGithub(profile) 
+    console.log(profile)
       return user
       ? done(null, user)
       : done(null, false, {
