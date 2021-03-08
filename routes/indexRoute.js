@@ -1,7 +1,8 @@
 const express = require("express");
-const { Store } = require("express-session");
+const { MemoryStore, Store } = require("express-session");
 const router = express.Router();
 const { ensureAuthenticated, isAdmin } = require("../middleware/checkAuth");
+// const { store, getSessions } = require("../models/userSession");
 
 router.get("/", (req, res) => {
   res.send("welcome");
@@ -14,19 +15,16 @@ router.get("/dashboard", ensureAuthenticated, (req, res) => {
 });
 
 router.get("/admin", isAdmin, (req, res) => {
-  // store.all((error, sessions) => {
-  //   console.log(sessions)
-  //   return sessions
-  // })
-  let temp = (JSON.parse(JSON.stringify(req.sessionStore.sessions)))
-  console.log(req.sessionStore)
-  console.log(temp)
   res.render("admin", {
     user: req.user,
-    session: req.session,
-    currentSessions: (JSON.parse(JSON.stringify(req.sessionStore.sessions))),
-    activeSessions: (JSON.parse(JSON.stringify(req.sessionStore.sessions))),
-  })
-})
+    sessions: req.sessionStore.sessions,
+  });
+});
+
+router.get("/admin/revoke/:sessionID", (req, res) => {
+const sessionID = req.params.sessionID;
+req.sessionStore.destroy(sessionID);
+res.redirect("/admin");
+});
 
 module.exports = router;

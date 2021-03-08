@@ -15,7 +15,7 @@ const database = [
     id: 3,
     name: "Jonathan Chen",
     email: "jonathan123@gmail.com",
-    password: "!",
+    password: "jonathan123!",
     isAdmin: true,
   },
 ];
